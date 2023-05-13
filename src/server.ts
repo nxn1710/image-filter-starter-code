@@ -36,11 +36,17 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
-
-  app.get( "/filteredimage", async ( req, res ) => {
-    console.log(req.query.image_url)
-  } );
   
+  app.get("/filteredimage", async(req, res) => {
+    const url: string = req.query.image_url as string;
+    if (url == null) {
+      res.send('Please add a url image e.g /filteredimage?image_url={{}}');
+    } else {
+      const filePath = await filterImageFromURL(url);
+      console.log(filePath)
+      res.sendFile(filePath);
+    }
+  })
 
   // Start the Server
   app.listen( port, () => {
